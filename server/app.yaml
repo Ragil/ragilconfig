@@ -1,0 +1,14 @@
+application : ragilfrontend
+runtime : python27
+version : 1
+api_version : 1
+threadsafe : true
+
+handlers:
+
+- url : /admin.*
+  script: main.app
+  secure : always
+
+- url : /config
+  script: main.app

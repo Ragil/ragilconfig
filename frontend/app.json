@@ -1,0 +1,7 @@
+{
+  "name": "config service",
+  "description": "centralized config",
+  "env": {
+    "PRODUCTION": "true"
+  }
+}
