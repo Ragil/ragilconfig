@@ -76,6 +76,28 @@ def list():
     'configs' : [c.toJson() for c in configs] if configs else []
   }
 
+
+def _getConfig(namespace):
+  """Return config for a given namespace"""
+  if not namespace:
+    abort(400, { 'error' : 'namespace is required' })
+
+  config = Config.get_by_id(namespace)
+  if not config:
+    abort(404, { 'error' : 'config not found' })
+
+  return config
+
+
+@app.route('/admin/config/<namespace>', methods=['DELETE'])
+@cross_origin()
+@jsonify
+def deleteAsAdmin(namespace):
+  config = _getConfig(namespace)
+  config.key.delete()
+  return config.toJson()
+
+
 @app.route('/admin/config/<namespace>', methods=['GET'])
 @cross_origin()
 @jsonify
@@ -84,14 +106,7 @@ def getAsAdmin(namespace):
 
   namespace : config namespace
   """
-  if not namespace:
-    abort(400, { 'error' : 'namespace is required' })
-
-  config = Config.get_by_id(namespace)
-  if not config:
-    abort(404, { 'error' : 'config not found' })
-
-  return config.toJson()
+  return _getConfig(namespace).toJson()
 
 
 @app.route('/config', methods=['GET'])
@@ -103,17 +118,11 @@ def get():
   namespace : config namespace
   auth : username and password required to fetch the config
   """
-  namespace = request.args.get('namespace')
-  if not namespace:
-    abort(400, { 'error' : 'namespace is required' })
-
   auth = request.authorization
   if not auth:
     abort(400, { 'error' : 'auth is required' })
 
-  config = Config.get_by_id(namespace)
-  if not config:
-    abort(404, { 'error' : 'config not found for ' + namespace })
+  config = _getConfig(request.args.get('namespace'))
 
   if config.username != auth.username and config.password != auth.password:
     abort(403, { 'error' : 'unauthorized' })
