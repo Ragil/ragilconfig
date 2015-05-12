@@ -8,6 +8,7 @@ handlers:
 
 - url : /admin.*
   script: main.app
+  login : admin
   secure : always
 
 - url : /config

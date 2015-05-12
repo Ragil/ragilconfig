@@ -39,7 +39,8 @@ export default class UpdatePage extends React.Component {
 
     console.log(this.state.data);
     $.ajax(env.service.config, {
-      data : this.state.data,
+      contentType : 'application/json; charset=UTF-8',
+      data : JSON.stringify(this.state.data),
       method : 'POST'
     }).done(((data, status, jqXHR) => {
       this.setState({
