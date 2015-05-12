@@ -6,7 +6,6 @@ from functools import wraps
 
 
 app = Flask(__name__)
-app.debug=True
 
 def jsonify(func):
   """Convert response into json object."""
@@ -109,10 +108,10 @@ def getAsAdmin(namespace):
   return _getConfig(namespace).toJson()
 
 
-@app.route('/config', methods=['GET'])
+@app.route('/config/<namespace>', methods=['GET'])
 @cross_origin()
 @jsonify
-def get():
+def get(namespace):
   """Fetch config for a given namespace.
 
   namespace : config namespace
@@ -122,7 +121,7 @@ def get():
   if not auth:
     abort(400, { 'error' : 'auth is required' })
 
-  config = _getConfig(request.args.get('namespace'))
+  config = _getConfig(namespace)
 
   if config.username != auth.username and config.password != auth.password:
     abort(403, { 'error' : 'unauthorized' })

@@ -1,4 +1,4 @@
-application : ragilfrontend
+application : ragilconfig
 runtime : python27
 version : 1
 api_version : 1
@@ -11,5 +11,6 @@ handlers:
   login : admin
   secure : always
 
-- url : /config
+- url : /config/.*
   script: main.app
+  secure : always
