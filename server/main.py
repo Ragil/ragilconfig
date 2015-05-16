@@ -32,6 +32,8 @@ class Config(ndb.Model):
 
 
 def generic_error_handler(error):
+  if 'description' not in error:
+    return error
   return json.jsonify(error.description), error.code
 
 for error in range(400, 420) + range(500,506):
@@ -123,7 +125,7 @@ def get(namespace):
 
   config = _getConfig(namespace)
 
-  if config.username != auth.username and config.password != auth.password:
+  if config.username != auth.username or config.password != auth.password:
     abort(403, { 'error' : 'unauthorized' })
 
   return config.props
